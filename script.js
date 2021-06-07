@@ -1,5 +1,9 @@
 console.log("Hello World");
 
+const BOARD_COLOR = "blue";
+const SNAKE_COLOR = "green";
+const FOOD_COLOR = "red";
+
 const changeState = (block) => {
     if (block.classList.contains("false")) {
         block.classList.remove("false");
@@ -13,58 +17,96 @@ const changeState = (block) => {
 
 class Snake {
     constructor () {
-        this.x = 8;
+        this.x = 12;
         this.y = 7;
         this.vel = 1;
         this.snake = [
             [this.x, this.y],
-            [this.x - 1, this.y - 1]
         ];
         this.color = "green";
         this.snakeHead = this.snake[0];
-        this.foodAdder = false;
-        this.foodBlock = [];
+        this.eat = false;
     }
     createSnake () {
-        const snakeSquare = document.querySelector(`.row-${this.snakeHead[1]}_col-${this.snakeHead[0]}`);
+        const snakeSquare = document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`);
         snakeSquare.style.backgroundColor = this.color;
         changeState(snakeSquare);
     }
     move(direction) {
-        // const snakeSquare = document.querySelector(`.row-${this.snakeHead[1]}_col-${this.snakeHead[0]}`);
-        // snakeSquare.style.backgroundColor = "blue";
-        // changeState(snakeSquare);
         
         if (direction === "up") {
-            this.snakeHead[1] -= this.vel;
+            if (this.snake.length > 1) {
+                for (let i = this.snake.length - 1; i > 0; i--) {
+                    this.snake[i][0] = this.snake[i - 1][0];
+                    this.snake[i][1] = this.snake[i - 1][1];
+                }
+                this.snake[0][1] -= this.vel;
+            } else {
+                this.snake[0][1] -= this.vel;
+            }
         }
         if (direction === "down") {
-            this.snakeHead[1] += this.vel;
+            if (this.snake.length > 1) {
+                for (let i = this.snake.length - 1; i > 0; i--) {
+                    this.snake[i][0] = this.snake[i - 1][0];
+                    this.snake[i][1] = this.snake[i - 1][1];
+                }
+                this.snake[0][1] += this.vel;
+            } else {
+                this.snake[0][1] += this.vel;
+            }
         }
         if (direction === "right") {
-            this.snakeHead[0] += this.vel;
+            if (this.snake.length > 1) {
+                for (let i = this.snake.length - 1; i > 0; i--) {
+                    this.snake[i][0] = this.snake[i - 1][0];
+                    this.snake[i][1] = this.snake[i - 1][1];
+                }
+                this.snake[0][0] += this.vel;
+            } else {
+                this.snake[0][0] += this.vel;
+            }
         }
         if (direction === "left") {
-            this.snakeHead[0] -= this.vel;
+            if (this.snake.length > 1) {
+                for (let i = this.snake.length - 1; i > 0; i--) {
+                    this.snake[i][0] = this.snake[i - 1][0];
+                    this.snake[i][1] = this.snake[i - 1][1];
+                }
+                this.snake[0][0] -= this.vel;
+            } else {
+                this.snake[0][0] -= this.vel;
+            }
         }
-        // console.log(this.snake);
     }
-    foodAte() {
-        this.snake.push(this.foodBlock[0]);
-        this.foodAdder = false;
+    snakeAte(board) {
+        this.snake.push([board.food[0], board.food[1]]);
+        console.log(this.snake.length);
+        board.food.pop();
+        board.food.pop();
+        document.querySelector(".food").classList.remove("food");
+        this.eat = false;
     }
-    update(foodLocation) {
-        if (this.foodAdder) {
-            this.foodAte();
+    update(board) {
+        if (this.eat) {
+            this.snakeAte(board);
         }
-        // this.snake.forEach((block) => {
-        //     const snakeSquare = document.querySelector(`.row-${block[1]}_col-${block[0]}`);
-        //     snakeSquare.style.backgroundColor = this.color;
-        //     // changeState(snakeSquare);
-        // })
-        if (this.snakeHead[1] === foodLocation[0] && this.snakeHead[0] === foodLocation[1]) {
-            this.foodAdder = true;
-            this.foodBlock.push([this.snakeHead[0], this.snakeHead[1]]);
+        for (let square of document.querySelectorAll(".snake")) {
+            square.classList.remove("snake");
+        }
+        this.snake.forEach((block) => {
+            const snakeSquare = document.querySelector(`.row-${block[1]}_col-${block[0]}`);
+            snakeSquare.classList.add("snake");
+            // console.log(snakeSquare);
+            // changeState(snakeSquare);
+        });
+
+        // for (let i = 0; i < this.snake.length - 1; i++) {
+        //     const snakeSquare = document.querySelector(`.row-${this.snake[i][1]}_col-${this.snake[i][0]}`);
+        //     snakeSquare.classList.add("snake");
+        // }
+        if (this.snake[this.snake.length - 1][0] === board.food[0] && this.snake[this.snake.length - 1][1] === board.food[1]) {
+            this.eat = true;
         }
     }
 }
@@ -73,12 +115,12 @@ class Board {
     constructor () {
         this.rows = 25;
         this.cols = 50;
-        this.food = [14, 39];
+        this.food = [];
         const gameBoard = document.querySelector(".game-board");
         for (let i = 1; i <= this.rows; i++) {
             for (let j = 1; j <= this.cols; j++) {
                 const square = document.createElement("div");
-                square.style.backgroundColor = "blue";
+                square.style.backgroundColor = BOARD_COLOR;
                 gameBoard.appendChild(square);
                 square.classList.add(`row-${i}_col-${j}`);
                 square.classList.add("square");
@@ -88,18 +130,35 @@ class Board {
             }
         }
     }
-    update(snakeArr) {
-        document.querySelector(`.row-${this.food[0]}_col-${this.food[1]}`).style.backgroundColor = "red";
-
+    update() {
         const squares = document.querySelectorAll(".square");
         for (let square of squares) {
-            for (let i = 0; i < snakeArr.length - 1; i++) {
-                if (square.classList.contains(`row-${snakeArr[i][1]}_col-${snakeArr[i][0]}`)) {
-                    console.log(snakeArr[i]);
-                    square.classList.add("snake");
-                }
+            if (square.classList.contains("snake")) {
+                square.style.backgroundColor = SNAKE_COLOR;
+            } else if (square.classList.contains("food")) {
+                square.style.backgroundColor = FOOD_COLOR;
+            } else {
+                square.style.backgroundColor = BOARD_COLOR;
             }
         }
+        if (this.food.length === 0) {
+            this.createFood();
+        }
+    }
+    createFood() {
+        const x = Math.ceil(Math.random() * 25);
+        const y = Math.ceil(Math.random() * 50);
+
+        while (document.querySelector(`.row-${x}_col-${y}`).classList.contains("snake")) {
+            x++;
+            y++;
+        }
+
+        this.food.push(y);
+        this.food.push(x);
+        const food = document.querySelector(`.row-${x}_col-${y}`);
+        food.classList.add("food");
+        food.style.backgroundColor = FOOD_COLOR;
     }
 }
 
@@ -107,7 +166,7 @@ const newBoard = new Board();
 const newSnake = new Snake();
 newSnake.createSnake();
 
-document.addEventListener('keydown', (event) => {
+document.addEventListener('keyup', (event) => {
     var key = event.key;
 
     if (key === "ArrowLeft") {
@@ -122,8 +181,8 @@ document.addEventListener('keydown', (event) => {
     if (key === "ArrowUp") {
         newSnake.move("up");
     }
-    newSnake.update(newBoard.food);
-    newBoard.update(newSnake.snake);
+    newSnake.update(newBoard);
+    newBoard.update();
 });
 
 
