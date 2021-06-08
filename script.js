@@ -4,6 +4,8 @@ const BOARD_COLOR = "blue";
 const SNAKE_COLOR = "green";
 const FOOD_COLOR = "red";
 
+let gameOn = true;
+
 const changeState = (block) => {
     if (block.classList.contains("false")) {
         block.classList.remove("false");
@@ -29,6 +31,7 @@ class Snake {
     }
     createSnake () {
         const snakeSquare = document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`);
+        snakeSquare.classList.add("snake");
         snakeSquare.style.backgroundColor = this.color;
         changeState(snakeSquare);
     }
@@ -81,7 +84,7 @@ class Snake {
     }
     snakeAte(board) {
         this.snake.push([board.food[0], board.food[1]]);
-        console.log(this.snake.length);
+        // console.log(this.snake.length);
         board.food.pop();
         board.food.pop();
         document.querySelector(".food").classList.remove("food");
@@ -91,20 +94,28 @@ class Snake {
         if (this.eat) {
             this.snakeAte(board);
         }
+        
+        try {
+            if (document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`).classList.contains("snake")) {
+                console.log("You crashed!");
+                // gameOn = false;
+            }
+        } catch (err) {
+            console.log("ignore this");
+        }
+
         for (let square of document.querySelectorAll(".snake")) {
             square.classList.remove("snake");
         }
         this.snake.forEach((block) => {
-            const snakeSquare = document.querySelector(`.row-${block[1]}_col-${block[0]}`);
-            snakeSquare.classList.add("snake");
-            // console.log(snakeSquare);
-            // changeState(snakeSquare);
+            try {
+                document.querySelector(`.row-${block[1]}_col-${block[0]}`).classList.add("snake");
+            } catch (err) {
+                console.log("You went out of bounds!");
+                // gameOn = false;
+            }
         });
 
-        // for (let i = 0; i < this.snake.length - 1; i++) {
-        //     const snakeSquare = document.querySelector(`.row-${this.snake[i][1]}_col-${this.snake[i][0]}`);
-        //     snakeSquare.classList.add("snake");
-        // }
         if (this.snake[this.snake.length - 1][0] === board.food[0] && this.snake[this.snake.length - 1][1] === board.food[1]) {
             this.eat = true;
         }
@@ -166,7 +177,7 @@ const newBoard = new Board();
 const newSnake = new Snake();
 newSnake.createSnake();
 
-document.addEventListener('keyup', (event) => {
+document.addEventListener('keydown', (event) => {
     var key = event.key;
 
     if (key === "ArrowLeft") {
@@ -181,8 +192,12 @@ document.addEventListener('keyup', (event) => {
     if (key === "ArrowUp") {
         newSnake.move("up");
     }
-    newSnake.update(newBoard);
-    newBoard.update();
+
+    // while (gameOn) {
+        newSnake.update(newBoard);
+        newBoard.update();
+    // }
+
 });
 
 
