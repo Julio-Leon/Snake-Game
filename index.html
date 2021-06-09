@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>the Snake Game</h1>
+    <h1>The Snake Game</h1>
 
     <div class="container">
         <div class="header-bar flex-container">
@@ -29,6 +29,33 @@
             <div class="restart">
                 <button class="restart-button">Restart Button</button>
             </div>
+            <div class="difficulty-selector flex-container">
+                <div class="difficulty-box easy">Easy</div>
+                <div class="difficulty-box medium">Medium</div>
+                <div class="difficulty-box hard">Hard</div>
+                <div class="difficulty-box insane">INSANE</div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- PLAYER NAME MODAL -->
+
+    <div class="bg-modal">
+        <div class="modal-content">
+            <form class="player-name-form">
+                <h2>What is your name?</h2>
+                <input type="text" placeholder="Name:" class="player-name-input">
+            </form>
+        </div>
+    </div>
+
+    <!-- PLAYER NAME MODAL -->
+
+    <div class="bg-modal-lost">
+        <div class="modal-content-lost">
+            <h2>You Lost!</h2>
+            <button class="restart-lost-button">Try Again</button>
         </div>
     </div>
 
