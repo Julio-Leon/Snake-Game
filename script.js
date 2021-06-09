@@ -1,12 +1,15 @@
 console.log("Hello World");
 
-const BOARD_COLOR = "blue";
-const SNAKE_COLOR = "green";
+const BOARD_COLOR_LIGHT = "lightblue";
+const BOARD_COLOR = "cadetblue";
+const SNAKE_COLOR = "blue";
 const FOOD_COLOR = "red";
 
-let gameOn = true;
+let gameOn = false;
 
-let difficulty = 150;
+let difficulty = 75;
+
+let currentDir = null;
 
 const lostModal = document.querySelector(".bg-modal-lost");
 
@@ -26,15 +29,27 @@ class Board {
         this.rows = 25;
         this.cols = 50;
         this.food = [];
+        let light = true;
         const gameBoard = document.querySelector(".game-board");
         for (let i = 1; i <= this.rows; i++) {
+
+            if (light) light = false;
+            else light = true;
+
             for (let j = 1; j <= this.cols; j++) {
                 const square = document.createElement("div");
-                square.style.backgroundColor = BOARD_COLOR;
+                if (light) {
+                    square.style.backgroundColor = BOARD_COLOR_LIGHT;
+                    light = false;
+                    square.classList.add("light");
+                } else {
+                    square.style.backgroundColor = BOARD_COLOR;
+                    light = true;
+                }
                 gameBoard.appendChild(square);
                 square.classList.add(`row-${i}_col-${j}`);
                 square.classList.add("square");
-                square.style.height = "15px";
+                square.style.height = "25px";
                 square.style.gridRow = "1fr";
                 square.style.gridColumn = "1fr";
             }
@@ -50,7 +65,11 @@ class Board {
             } else if (square.classList.contains("food")) {
                 square.style.backgroundColor = FOOD_COLOR;
             } else {
-                square.style.backgroundColor = BOARD_COLOR;
+                if (square.classList.contains("light")) {
+                    square.style.backgroundColor = BOARD_COLOR_LIGHT;
+                } else {
+                    square.style.backgroundColor = BOARD_COLOR;
+                }
             }
         }
         if (this.food.length === 0) {
@@ -79,11 +98,11 @@ class Snake {
         this.x = 12;
         this.y = 7;
         this.vel = 1;
-        this.dir = "right";
+        this.dir = null;
         this.snake = [
             [this.x, this.y],
         ];
-        this.color = "green";
+        this.color = SNAKE_COLOR;
         this.snakeHead = this.snake[0];
         this.eat = false;
         this.highestScore = highestScore;
@@ -106,9 +125,9 @@ class Snake {
         changeState(snakeSquare);
     }
     move(direction) {
-        if (!gameOn) return;
+        // if (!gameOn) return;
         // console.log("MOVE");
-        if (direction === "ArrowUp" && this.dir !== "down") {
+        if (direction === "ArrowUp") {
             if (this.snake.length > 1) {
                 for (let i = this.snake.length - 1; i > 0; i--) {
                     this.snake[i][0] = this.snake[i - 1][0];
@@ -120,7 +139,7 @@ class Snake {
             }
             this.dir = "up";
         }
-        if (direction === "ArrowDown" && this.dir !== "up") {
+        if (direction === "ArrowDown") {
             if (this.snake.length > 1) {
                 for (let i = this.snake.length - 1; i > 0; i--) {
                     this.snake[i][0] = this.snake[i - 1][0];
@@ -132,7 +151,7 @@ class Snake {
             }
             this.dir = "down";
         }
-        if (direction === "ArrowRight" && this.dir !== "left") {
+        if (direction === "ArrowRight") {
             if (this.snake.length > 1) {
                 for (let i = this.snake.length - 1; i > 0; i--) {
                     this.snake[i][0] = this.snake[i - 1][0];
@@ -144,7 +163,7 @@ class Snake {
             }
             this.dir = "right";
         }
-        if (direction === "ArrowLeft" && this.dir !== "right") {
+        if (direction === "ArrowLeft") {
             if (this.snake.length > 1) {
                 for (let i = this.snake.length - 1; i > 0; i--) {
                     this.snake[i][0] = this.snake[i - 1][0];
@@ -155,6 +174,21 @@ class Snake {
                 this.snake[0][0] -= this.vel;
             }
             this.dir = "left";
+        }
+
+        try {
+            if (document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`).classList.contains("snake") && gameOn) {
+                console.log(gameOn);
+                console.log("You crashed!");
+                window.clearInterval(moveIntervalID);
+                window.clearInterval(snakeIntervalID);
+                window.clearInterval(boardIntervalID);
+                lostModal.style.display = "flex";
+                gameOn = false;
+                console.log("HERE");
+            }
+        } catch (err) {
+            console.log("ignore this");
         }
         console.log(this.dir);
     }
@@ -173,22 +207,10 @@ class Snake {
             this.snakeAte(board);
         }
         
-        try {
-            if (document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`).classList.contains("snake")) {
-                console.log("You crashed!");
-                window.clearInterval(moveIntervalID);
-                window.clearInterval(snakeIntervalID);
-                window.clearInterval(boardIntervalID);
-                lostModal.style.display = "flex";
-                gameOn = false;
-            }
-        } catch (err) {
-            console.log("ignore this");
-        }
-
         for (let square of document.querySelectorAll(".snake")) {
             square.classList.remove("snake");
         }
+        
         this.snake.forEach((block) => {
             try {
                 document.querySelector(`.row-${block[1]}_col-${block[0]}`).classList.add("snake");
@@ -199,6 +221,7 @@ class Snake {
                 window.clearInterval(boardIntervalID);
                 lostModal.style.display = "flex";
                 gameOn = false;
+                // console.log("HERE");
             }
         });
 
@@ -213,8 +236,8 @@ let newSnake = new Snake();
 newSnake.createSnake();
 newBoard.createFood();
 
-const scoreDisplay = document.querySelector(".current-score");
-const highestScoreDisplay = document.querySelector(".highest-score");
+const scoreDisplay = document.querySelector("#current-number");
+const highestScoreDisplay = document.querySelector("#number");
 
 let moveIntervalID = null;
 let snakeIntervalID = null;
@@ -226,48 +249,85 @@ const restartBar = document.querySelector(".difficulty-selector");
 
 const selectDifficulty = (event) => {
 
+    if (gameOn) return;
+
+    const easyButton = document.querySelector(".easy");
+    const mediumButton = document.querySelector(".medium");
+    const hardButton = document.querySelector(".hard");
+    const insaneButton = document.querySelector(".insane");
+
     if (event.target.classList.contains("easy")) {
-        difficulty = 200;
+        difficulty = 100;
+        event.target.style.border = "red solid 3px";
+        mediumButton.style.border = "black";
+        hardButton.style.border = "black";
+        insaneButton.style.border = "black";
     }
 
     if (event.target.classList.contains("medium")) {
-        difficulty = 150;
+        difficulty = 75;
+        event.target.style.border = "red solid 3px";
+        easyButton.style.border = "black";
+        hardButton.style.border = "black";
+        insaneButton.style.border = "black";
     }
 
     if (event.target.classList.contains("hard")) {
-        difficulty = 100;
+        difficulty = 50;
+        event.target.style.border = "red solid 3px";
+        mediumButton.style.border = "black";
+        easyButton.style.border = "black";
+        insaneButton.style.border = "black";
     }
 
     if (event.target.classList.contains("insane")) {
-        difficulty = 50;
+        difficulty = 25;
+        event.target.style.border = "red solid 3px";
+        mediumButton.style.border = "black";
+        hardButton.style.border = "black";
+        easyButton.style.border = "black";
     }
-
 };
+
+restartBar.addEventListener("click", selectDifficulty);
 
 document.body.addEventListener('keyup', (event) => {
 
-    window.clearInterval(moveIntervalID);
-    window.clearInterval(snakeIntervalID);
-    window.clearInterval(boardIntervalID);
-    window.clearInterval(currentScoreIntervalID);
-    window.clearInterval(highestScoreIntervalID);
+    if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
+        gameOn = true;
+        window.clearInterval(moveIntervalID);
+        window.clearInterval(snakeIntervalID);
+        window.clearInterval(boardIntervalID);
+        window.clearInterval(currentScoreIntervalID);
+        window.clearInterval(highestScoreIntervalID);
 
-    moveIntervalID = window.setInterval(() => {
-        newSnake.move(event.key);
-    }, difficulty);
-    snakeIntervalID = window.setInterval(() => {
-        newSnake.update(newBoard, moveIntervalID, snakeIntervalID, boardIntervalID);
-    }, difficulty);
-    boardIntervalID = window.setInterval(() => {
-        newBoard.update();
-    }, difficulty);
-    currentScoreIntervalID = window.setInterval(() => {
-        scoreDisplay.innerText = newSnake.getScore();
-    });
-    highestScoreIntervalID = window.setInterval(() => {
-        newSnake.updateHighestScore();
-        highestScoreDisplay.innerText = newSnake.getHighestScore();
-    });
+        // if snake.dir = up and if event.key != down
+
+        let key = event.key;
+
+        moveIntervalID = window.setInterval(() => {
+            if (newSnake.dir === "up" && key === "ArrowDown") key = "ArrowUp";
+            if (newSnake.dir === "down" && key === "ArrowUp") key = "ArrowDown";
+            if (newSnake.dir === "left" && key === "ArrowRight") key = "ArrowLeft";
+            if (newSnake.dir === "right" && key === "ArrowLeft") key = "ArrowRight";
+            newSnake.move(key);
+        }, difficulty);
+        snakeIntervalID = window.setInterval(() => {
+            newSnake.update(newBoard, moveIntervalID, snakeIntervalID, boardIntervalID);
+        }, difficulty);
+        boardIntervalID = window.setInterval(() => {
+            newBoard.update();
+        }, difficulty);
+        currentScoreIntervalID = window.setInterval(() => {
+            scoreDisplay.innerText = newSnake.getScore();
+        });
+        highestScoreIntervalID = window.setInterval(() => {
+            newSnake.updateHighestScore();
+            highestScoreDisplay.innerText = newSnake.getHighestScore();
+        });
+    } else {
+        return;
+    }
 });
 
 const form = document.querySelector(".player-name-form");
@@ -298,14 +358,19 @@ const restartGame = () => {
     newSnake.createSnake();
     newBoard.createFood();
 
-    gameOn = true;
 };
 
 form.addEventListener("submit", setPlayerName);
 
 const restartButton = document.querySelector(".restart-button");
 
-restartButton.addEventListener(("click"), restartGame);
+restartButton.addEventListener(("click"), () => {
+    gameOn = false;
+    window.clearInterval(moveIntervalID);
+    window.clearInterval(snakeIntervalID);
+    window.clearInterval(boardIntervalID);
+    restartGame();
+    });
 
 const lostRestartButton = document.querySelector(".restart-lost-button");
 
