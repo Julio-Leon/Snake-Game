@@ -381,8 +381,8 @@ firstBlock.addEventListener("click", () => {
 });
 
 secondBlock.addEventListener("click", () => {
-    BOARD_COLOR_LIGHT = "greenyellow";
-    BOARD_COLOR = "green";
+    BOARD_COLOR_LIGHT = "rgb(101, 150, 29)";
+    BOARD_COLOR = "rgb(163, 163, 46)";
     SNAKE_COLOR = "purple";
     FOOD_COLOR = "darkorange";
     restartGame();
