@@ -8,3 +8,5 @@ Instructions to run the application locally!
  - Add them to a directory on VSCode
  - Install Live Server Extension
  - Go Live!
+
+Snake Game App - https://julio-leon.github.io/Snake-Game/
