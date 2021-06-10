@@ -13,11 +13,11 @@
     <div class="container">
         <div class="header-bar flex-container">
             <div class="player-name">
-                Player Name
+                Name
             </div>
             <div class="current flex-container">
                 <div class="current-score">
-                    Current Score:
+                    Score:
                 </div>
                 <div class="current-score" id="current-number">
                     0
@@ -45,6 +45,26 @@
                 <div class="difficulty-box hard">Hard</div>
                 <div class="difficulty-box insane">INSANE</div>
             </div>
+            <div class="theme-picker flex-container">
+                <div class="theme-block flex-container first-block">
+                    <div class="theme-color first"></div>
+                    <div class="theme-color second"></div>
+                    <div class="theme-color third"></div>
+                    <div class="theme-color fourth"></div>
+                </div>
+                <div class="theme-block flex-container second-block">
+                    <div class="theme-color first"></div>
+                    <div class="theme-color second"></div>
+                    <div class="theme-color third"></div>
+                    <div class="theme-color fourth"></div>
+                </div>
+                <div class="theme-block flex-container third-block">
+                    <div class="theme-color first"></div>
+                    <div class="theme-color second"></div>
+                    <div class="theme-color third"></div>
+                    <div class="theme-color fourth"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -60,12 +80,20 @@
         </div>
     </div>
 
-    <!-- PLAYER NAME MODAL -->
+    <!-- LOST MODAL -->
 
     <div class="bg-modal-lost">
         <div class="modal-content-lost">
-            <h2>You Lost!</h2>
-            <button class="restart-lost-button">Try Again</button>
+            <h2>YOU LOST!</h2>
+            <button class="restart-lost-button">Try Again!</button>
+        </div>
+    </div>
+
+    <!-- WIN MODAL -->
+    <div class="bg-modal-won">
+        <div class="modal-content-won">
+            <h2 class="win">YOU WON!</h2>
+            <button class="restart-won-button">Play!</button>
         </div>
     </div>
 

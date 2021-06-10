@@ -16,20 +16,20 @@ html {
 }
 
 h1 {
-    margin-top: 25px;
-    margin-bottom: 15px;
-    font-size: 50px;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 100px;
 }
 
 h2 {
     color: white;
-    font-size: 30px;
-    margin-bottom: 50px;
+    font-size: 50px;
+    margin-bottom: 40px;
+    margin-top: 50px;
 }
 
 body {
     text-align: center;
-    /* padding: 15px 300px; */
 }
 
 .flex-container {
@@ -75,12 +75,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(0, 0, 0, 0.6);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
     top: 0;
-    /* display: none; */
+    left: 0;
 }
 
 .modal-content {
@@ -112,9 +112,10 @@ body {
     align-items: center;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     position: absolute;
     top: 0;
+    left: 0;
     display: none;
 }
 
@@ -131,8 +132,12 @@ body {
     font-size: 35px;
 }
 
-.restart-lost-button {
+.restart-lost-button, .restart-won-button {
     cursor: pointer;
+}
+
+.restart-won-button {
+    margin-top: 50px;
 }
 
 .footer-bar {
@@ -182,8 +187,12 @@ button {
 button:hover {
     transform: scale(1.1);
 }
+.current {
+    width: 250px;
+    justify-content: space-evenly;
+}
 
-.highest, .current {
+.highest {
     width: 400px;
     justify-content: space-evenly;
 }
@@ -202,3 +211,88 @@ button:hover {
     padding-left: 10px;
     font-size: 20px;
 }
+
+.theme-picker {
+    justify-content: space-between;
+    align-items: center;
+    width: 400px;
+    margin-right: 20px;
+    margin-left: -150px;
+}
+
+.theme-block {
+    height: 50px;
+    width: 100px;
+    border: red 2px solid;
+    cursor: pointer;
+}
+
+.theme-color {
+    width: 25px;
+}
+
+.first-block .first {
+    background-color: blue;
+}
+.first-block .second {
+    background-color: red;
+}
+.first-block .third {
+    background-color: lightblue;
+}
+.first-block .fourth {
+    background-color: cadetblue;
+}
+
+.second-block .first {
+    background-color: purple;
+}
+.second-block .second {
+    background-color: darkorange;
+}
+.second-block .third {
+    background-color: greenyellow;
+}
+.second-block .fourth {
+    background-color: green;
+}
+
+.third-block .first {
+    background-color: darkred;
+}
+.third-block .second {
+    background-color: yellow;
+}
+.third-block .third {
+    background-color: darkgray;
+}
+.third-block .fourth {
+    background-color: lightgray;
+}
+
+.theme-block:hover {
+    transform: scale(1.2);
+}
+
+
+.bg-modal-won {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.modal-content-won {
+    width: 500px;
+    height: 300px;
+    background-color: black;
+    border-radius: 30px;
+    position: relative;
+}
+

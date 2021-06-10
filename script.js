@@ -1,9 +1,7 @@
-console.log("Hello World");
-
-const BOARD_COLOR_LIGHT = "lightblue";
-const BOARD_COLOR = "cadetblue";
-const SNAKE_COLOR = "blue";
-const FOOD_COLOR = "red";
+let BOARD_COLOR_LIGHT = "lightblue";
+let BOARD_COLOR = "cadetblue";
+let SNAKE_COLOR = "blue";
+let FOOD_COLOR = "red";
 
 let gameOn = false;
 
@@ -12,17 +10,13 @@ let difficulty = 75;
 let currentDir = null;
 
 const lostModal = document.querySelector(".bg-modal-lost");
+const winModal = document.querySelector(".bg-modal-won");
 
-const changeState = (block) => {
-    if (block.classList.contains("false")) {
-        block.classList.remove("false");
-        block.classList.add("true");
-    } 
-    else if (block.classList.contains("true")) {
-        block.classList.remove("true");
-        block.classList.add("false");
-    }
-};
+const intervalClearer = (firstInterval, secondInterval, thirdInterval) => {
+    window.clearInterval(firstInterval);
+    window.clearInterval(secondInterval);
+    window.clearInterval(thirdInterval);
+}
 
 class Board {
     constructor () {
@@ -39,11 +33,11 @@ class Board {
             for (let j = 1; j <= this.cols; j++) {
                 const square = document.createElement("div");
                 if (light) {
-                    square.style.backgroundColor = BOARD_COLOR_LIGHT;
+                    square.style.backgroundColor = BOARD_COLOR_LIGHT; /////////
                     light = false;
                     square.classList.add("light");
                 } else {
-                    square.style.backgroundColor = BOARD_COLOR;
+                    square.style.backgroundColor = BOARD_COLOR; /////////
                     light = true;
                 }
                 gameBoard.appendChild(square);
@@ -56,19 +50,17 @@ class Board {
         }
     }
     update() {
-        // console.log("BOARD");
-        // if (!gameOn) return;
         const squares = document.querySelectorAll(".square");
         for (let square of squares) {
             if (square.classList.contains("snake")) {
-                square.style.backgroundColor = SNAKE_COLOR;
+                square.style.backgroundColor = SNAKE_COLOR; ///////
             } else if (square.classList.contains("food")) {
-                square.style.backgroundColor = FOOD_COLOR;
+                square.style.backgroundColor = FOOD_COLOR; ////////
             } else {
                 if (square.classList.contains("light")) {
-                    square.style.backgroundColor = BOARD_COLOR_LIGHT;
+                    square.style.backgroundColor = BOARD_COLOR_LIGHT; ///////
                 } else {
-                    square.style.backgroundColor = BOARD_COLOR;
+                    square.style.backgroundColor = BOARD_COLOR; ///////
                 }
             }
         }
@@ -94,7 +86,7 @@ class Board {
 }
 
 class Snake {
-    constructor (highestScore=1) {
+    constructor (highestScore=0) {
         this.x = 12;
         this.y = 7;
         this.vel = 1;
@@ -108,7 +100,7 @@ class Snake {
         this.highestScore = highestScore;
     }
     getScore() {
-        return this.snake.length;
+        return this.snake.length - 1;
     }
     updateHighestScore() {
         if (this.getScore() > this.highestScore) {
@@ -122,11 +114,8 @@ class Snake {
         const snakeSquare = document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`);
         snakeSquare.classList.add("snake");
         snakeSquare.style.backgroundColor = this.color;
-        changeState(snakeSquare);
     }
-    move(direction) {
-        // if (!gameOn) return;
-        // console.log("MOVE");
+    move(direction, first, second, third) {
         if (direction === "ArrowUp") {
             if (this.snake.length > 1) {
                 for (let i = this.snake.length - 1; i > 0; i--) {
@@ -178,19 +167,11 @@ class Snake {
 
         try {
             if (document.querySelector(`.row-${this.snake[0][1]}_col-${this.snake[0][0]}`).classList.contains("snake") && gameOn) {
-                console.log(gameOn);
-                console.log("You crashed!");
-                window.clearInterval(moveIntervalID);
-                window.clearInterval(snakeIntervalID);
-                window.clearInterval(boardIntervalID);
                 lostModal.style.display = "flex";
+                intervalClearer(first, second, third);
                 gameOn = false;
-                console.log("HERE");
             }
-        } catch (err) {
-            console.log("ignore this");
-        }
-        console.log(this.dir);
+        } catch (err) {}
     }
     snakeAte(board) {
         this.snake.push([board.food[0], board.food[1]]);
@@ -199,9 +180,13 @@ class Snake {
         document.querySelector(".food").classList.remove("food");
         this.eat = false;
     }
-    update(board, moveIntervalID, snakeIntervalID, boardIntervalID) {
-        // console.log("SNAKE");
-        // if (!gameOn) return;
+    update(board, first, second, third) {
+
+        if (this.getScore() === 1249) {
+            intervalClearer(first, second, third);
+            winModal.style.display = "flex";
+            gameOn = false;
+        }
 
         if (this.eat) {
             this.snakeAte(board);
@@ -215,13 +200,9 @@ class Snake {
             try {
                 document.querySelector(`.row-${block[1]}_col-${block[0]}`).classList.add("snake");
             } catch (err) {
-                console.log("You went out of bounds!");
-                window.clearInterval(moveIntervalID);
-                window.clearInterval(snakeIntervalID);
-                window.clearInterval(boardIntervalID);
+                intervalClearer(first, second, third);
                 lostModal.style.display = "flex";
                 gameOn = false;
-                // console.log("HERE");
             }
         });
 
@@ -295,13 +276,9 @@ document.body.addEventListener('keyup', (event) => {
 
     if (event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "ArrowLeft" || event.key === "ArrowRight") {
         gameOn = true;
-        window.clearInterval(moveIntervalID);
-        window.clearInterval(snakeIntervalID);
-        window.clearInterval(boardIntervalID);
+        intervalClearer(moveIntervalID, snakeIntervalID, boardIntervalID)
         window.clearInterval(currentScoreIntervalID);
         window.clearInterval(highestScoreIntervalID);
-
-        // if snake.dir = up and if event.key != down
 
         let key = event.key;
 
@@ -310,7 +287,7 @@ document.body.addEventListener('keyup', (event) => {
             if (newSnake.dir === "down" && key === "ArrowUp") key = "ArrowDown";
             if (newSnake.dir === "left" && key === "ArrowRight") key = "ArrowLeft";
             if (newSnake.dir === "right" && key === "ArrowLeft") key = "ArrowRight";
-            newSnake.move(key);
+            newSnake.move(key, moveIntervalID, snakeIntervalID, boardIntervalID);
         }, difficulty);
         snakeIntervalID = window.setInterval(() => {
             newSnake.update(newBoard, moveIntervalID, snakeIntervalID, boardIntervalID);
@@ -380,3 +357,41 @@ const restartOnLost = () => {
 }
 
 lostRestartButton.addEventListener("click", restartOnLost);
+
+const winRestartButton = document.querySelector(".restart-won-button");
+
+const restartOnWin = () => {
+    restartGame();
+    newSnake.highestScore = 0;
+    winModal.style.display = "none";
+}
+
+winRestartButton.addEventListener("click", restartOnWin);
+
+const firstBlock = document.querySelector(".first-block");
+const secondBlock = document.querySelector(".second-block");
+const thirdBlock = document.querySelector(".third-block");
+
+firstBlock.addEventListener("click", () => {
+    BOARD_COLOR_LIGHT = "lightblue";
+    BOARD_COLOR = "cadetblue";
+    SNAKE_COLOR = "blue";
+    FOOD_COLOR = "red";
+    restartGame();
+});
+
+secondBlock.addEventListener("click", () => {
+    BOARD_COLOR_LIGHT = "greenyellow";
+    BOARD_COLOR = "green";
+    SNAKE_COLOR = "purple";
+    FOOD_COLOR = "darkorange";
+    restartGame();
+});
+
+thirdBlock.addEventListener("click", () => {
+    BOARD_COLOR_LIGHT = "darkgray";
+    BOARD_COLOR = "lightgray";
+    SNAKE_COLOR = "darkred";
+    FOOD_COLOR = "yellow";
+    restartGame();
+});
