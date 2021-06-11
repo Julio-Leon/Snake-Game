@@ -26,6 +26,15 @@ h2 {
     font-size: 50px;
     margin-bottom: 40px;
     margin-top: 50px;
+    word-spacing: 5px;
+}
+
+p {
+    word-spacing: 5px;
+}
+
+div {
+    word-spacing: 5px;
 }
 
 body {
@@ -61,6 +70,7 @@ body {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     border: 12px black solid;
     border-bottom: 0;
+    background-color: black;
 }
 
 .restart {
@@ -102,8 +112,13 @@ body {
     right: 14px;
     font-size: 35px;
     font-weight: bold;
-    transform: rotate(45deg);
     cursor: pointer;
+    color: white;
+    transform: rotate(45deg);
+}
+
+.close:hover {
+    transform: scale(1.5) rotate(-45deg);
 }
 
 .bg-modal-lost {
@@ -155,6 +170,7 @@ body {
 .difficulty-selector {
     width: 250px;
     margin-right: 70px;
+    margin-left: -50px;
     justify-content: space-between;
 }
 
@@ -166,6 +182,7 @@ body {
     margin-bottom: 12px;
     cursor: pointer;
     border-radius: 10px;
+    font-size: 25px;
 }
 
 .difficulty-box:hover {
@@ -182,10 +199,13 @@ button {
     color: white;
     border-radius: 10px;
     font-size: 20px;
+    word-spacing: 5px;
 }
 
 button:hover {
     transform: scale(1.1);
+    background-color: white;
+    color: black;
 }
 .current {
     width: 250px;
@@ -232,10 +252,10 @@ button:hover {
 }
 
 .first-block .first {
-    background-color: blue;
+    background-color: red;
 }
 .first-block .second {
-    background-color: red;
+    background-color: darkgreen;
 }
 .first-block .third {
     background-color: lightblue;
@@ -248,7 +268,7 @@ button:hover {
     background-color: purple;
 }
 .second-block .second {
-    background-color: darkorange;
+    background-color: rgb(4, 0, 255);
 }
 .second-block .third {
     background-color: rgb(101, 150, 29);
@@ -296,3 +316,56 @@ button:hover {
     position: relative;
 }
 
+.instructions {
+    margin-right: -55px;
+    margin-top: -5px;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.instructions:hover {
+    transform: scale(1.3);
+}
+
+.player-name {
+    margin-left: 100px;
+}
+
+.bg-modal-instructions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.modal-content-instructions {
+    width: 500px;
+    height: 300px;
+    background-color: black;
+    border-radius: 30px;
+    position: relative;
+}
+
+.instructions-title {
+    color: white;
+    font-size: 30px;
+    margin-top: 15px;
+}
+
+
+.instructions-section {
+    margin-left: 30px;
+    margin-top: -20px;
+    text-align: left;
+}
+
+.instructions-element {
+    color: white;
+    font-size: 20px;
+}

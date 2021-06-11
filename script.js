@@ -1,7 +1,9 @@
 let BOARD_COLOR_LIGHT = "lightblue";
 let BOARD_COLOR = "cadetblue";
-let SNAKE_COLOR = "blue";
-let FOOD_COLOR = "red";
+let SNAKE_COLOR = "red";
+let FOOD_COLOR = "darkgreen";
+
+const WIN_SCORE = 1249;
 
 let gameOn = false;
 
@@ -44,6 +46,7 @@ class Board {
                 square.classList.add(`row-${i}_col-${j}`);
                 square.classList.add("square");
                 square.style.height = "25px";
+                square.style.borderRadius = "40%";
                 square.style.gridRow = "1fr";
                 square.style.gridColumn = "1fr";
             }
@@ -182,7 +185,7 @@ class Snake {
     }
     update(board, first, second, third) {
 
-        if (this.getScore() === 1249) {
+        if (this.getScore() === WIN_SCORE) {
             intervalClearer(first, second, third);
             winModal.style.display = "flex";
             gameOn = false;
@@ -375,8 +378,8 @@ const thirdBlock = document.querySelector(".third-block");
 firstBlock.addEventListener("click", () => {
     BOARD_COLOR_LIGHT = "lightblue";
     BOARD_COLOR = "cadetblue";
-    SNAKE_COLOR = "blue";
-    FOOD_COLOR = "red";
+    SNAKE_COLOR = "red";
+    FOOD_COLOR = "darkgreen";
     restartGame();
 });
 
@@ -384,7 +387,7 @@ secondBlock.addEventListener("click", () => {
     BOARD_COLOR_LIGHT = "rgb(101, 150, 29)";
     BOARD_COLOR = "rgb(163, 163, 46)";
     SNAKE_COLOR = "purple";
-    FOOD_COLOR = "darkorange";
+    FOOD_COLOR = "rgb(4, 0, 255)";
     restartGame();
 });
 
@@ -394,4 +397,16 @@ thirdBlock.addEventListener("click", () => {
     SNAKE_COLOR = "darkred";
     FOOD_COLOR = "yellow";
     restartGame();
+});
+
+const instructionsButton = document.querySelector(".instructions");
+const instructionsCloseButton = document.querySelector(".close");
+const instructionsModal = document.querySelector(".bg-modal-instructions");
+
+instructionsButton.addEventListener("click", () => {
+    instructionsModal.style.display = "flex";
+});
+
+instructionsCloseButton.addEventListener("click", () => {
+    instructionsModal.style.display = "none";
 });
