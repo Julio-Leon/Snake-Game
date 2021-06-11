@@ -9,8 +9,6 @@ let gameOn = false;
 
 let difficulty = 75;
 
-let currentDir = null;
-
 const lostModal = document.querySelector(".bg-modal-lost");
 const winModal = document.querySelector(".bg-modal-won");
 
@@ -350,7 +348,7 @@ restartButton.addEventListener(("click"), () => {
     window.clearInterval(snakeIntervalID);
     window.clearInterval(boardIntervalID);
     restartGame();
-    });
+});
 
 const lostRestartButton = document.querySelector(".restart-lost-button");
 
